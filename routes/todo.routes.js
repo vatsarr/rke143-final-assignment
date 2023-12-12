@@ -1,50 +1,49 @@
-const express = require('express');
-
+const express = require("express");
 const router = express.Router();
+const db = require("../db");
 
-router.get('/', async (req, res) => {
-
+router.get("/", async (req, res) => {
     try {
-        const data = db.query('SELECT * FROM todo;');
-        res.status(200).json({todo: data.rows});
-    }
-    catch(error) {
+        const data = await db.query("SELECT * FROM todo;");
+        res.status(200).json({ todo: data.rows });
+    } catch (error) {
         console.log(error);
     }
-    
 });
 
-router.post('/', (req, res) => {
+router.post("/", async (req, res) => {
     console.log(req.body);
     const { task } = req.body;
 
     try {
-        const data = await db.query('INSERT INTO todo (task) VALUES ($1);', [task]);
-        console.log(data);
-        res.status(200).json({message: `${data.rowCount} row inserted.`});
-    } 
-    catch (error) {
+        const data = await db.query("INSERT INTO todo (task) VALUES ($1);", [
+            task,
+        ]);
+        console.log(data.rows);
+        res.status(200).json({ message: `${data.rowCount} row inserted.` });
+    } catch (error) {
         console.log(error);
-    } 
-
+    }
 });
 
-router.delete('/', async (req, res) => {
-    const {id} = req;
+router.delete("/", async (req, res) => {
+    const { id } = req.body;
     const data = await db.query("SELECT * FROM todo WHERE id = $1;", [id]);
 
-    if(data.rows.length === 0) {
-        res.json({message: "there no such task"});
+    if (data.rows.length === 0) {
+        res.json({ message: "No task found" });
     } else {
         try {
-            const result = await db.query("DELETE FROM todo WHERE id = $1;", [id]);
-            res.status(200).json({message: `${result.rowCount} row was deleted.`});
-        }
-        catch(error) {
+            const result = await db.query("DELETE FROM todo WHERE id = $1;", [
+                id,
+            ]);
+            res.status(200).json({
+                message: `${result.rowCount} row was deleted.`,
+            });
+        } catch (error) {
             console.log(error);
         }
     }
 });
 
-
-module.exports = ; 
+module.exports = router;

@@ -1,14 +1,23 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const todoRouter = require();
-const dotenv = require('dotenv');
+const express = require("express");
+const bodyParser = require("body-parser");
+const todoRouter = require("./routes/todo.routes");
+const db = require("./db");
+
 const app = express();
 
-app.use(bodyParser.json());
+const port = 3000;
 
-
-app.use('/', );
-
-app.listen(, () => {
-    console.log('Server is running on Port 3000.');
+db.connect((error) => {
+    if (error) {
+        console.log("DB connection failed!");
+    } else {
+        console.log("DB connection initiated!");
+    }
 });
+
+app.use(bodyParser.json());
+app.use(express.json());
+
+app.use("/", todoRouter);
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
