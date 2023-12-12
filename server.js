@@ -10,8 +10,9 @@ const port = 3000;
 db.connect((error) => {
     if (error) {
         console.log("DB connection failed!");
+        console.log(error);
     } else {
-        console.log("DB connection initiated!");
+        console.log("DB connection successful!");
     }
 });
 
